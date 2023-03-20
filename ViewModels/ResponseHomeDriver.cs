@@ -10,7 +10,8 @@ namespace LimousineApi.ViewModels
     {
         public Driver? driver { get; set; }
 
-        public User? user { get; set; }
+        public UserDetailResponse? user { get; set; }
+         public UserDetailResponse? driverUser { get; set; }
 
         public Trip? trip { get; set; }
 

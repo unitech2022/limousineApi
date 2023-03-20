@@ -43,7 +43,7 @@ namespace LimousineApi.Controllers
 			return Ok(result);
 		}
 
-		[Authorize(Roles ="user")]
+		// [Authorize(Roles ="user")]
 		[HttpPost("update-user")]
 		public async Task<ActionResult> UpdateUser([FromForm] UserForUpdate userForUpdate)
 		{
@@ -51,7 +51,16 @@ namespace LimousineApi.Controllers
 			return Ok(result);
 		}
 
-		[Authorize(Roles = "user")]
+		// [Authorize(Roles ="user")]
+		[HttpPost("update-device-token")]
+		public async Task<ActionResult> UpdateDeviceToken([FromForm] string Token,[FromForm]  string UserId)
+		{
+			var result = await _service!.UpdateDeviceToken(Token,UserId);
+			return Ok(result);
+		}
+
+
+		// [Authorize(Roles = "user")]
 		[HttpPost("get-user")]
 		public async Task<ActionResult> GetUser([FromForm] string UserId)
 		{

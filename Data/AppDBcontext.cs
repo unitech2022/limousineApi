@@ -25,7 +25,7 @@ namespace LimousineApi.Data
 
         public DbSet<Trip>? Trips { get; set; }
 
-        // public DbSet<Category>? Categories { get; set; }
+        public DbSet<Notification>? Notifications { get; set; }
 
         // public DbSet<Field>? Fields { get; set; }
 

@@ -191,6 +191,7 @@ namespace LimousineApi.Serveries
         public async Task<dynamic> LoginUser(UserForLogin userForLogin)
         {
             var loginUser = await userManager.FindByNameAsync(userForLogin.UserName);
+            if(loginUser!=null)
             loginUser.DeviceToken = userForLogin.DeviceToken;
             await _context.SaveChangesAsync();
             if (loginUser != null && userForLogin.Code == "0000")
@@ -212,7 +213,7 @@ namespace LimousineApi.Serveries
             };
         }
 
-        public async Task<bool> UpdateDeviceToken(string Token,string UserId)
+        public async Task<object> UpdateDeviceToken(string Token,string UserId)
         {
             User user = await _context.Users.Where(x => x.Id == UserId).FirstAsync();
             user.DeviceToken = Token;
@@ -231,14 +232,14 @@ namespace LimousineApi.Serveries
             {
                 user.Email = userForUpdate.Email;
             }
-            if (userForUpdate.Points != null)
-            {
-                user.Points = user.Points+userForUpdate.Points;
-            }
+            // if (userForUpdate.Points != null)
+            // {
+            //     user.Points = user.Points+userForUpdate.Points;
+            // }
 
-            if (userForUpdate.City != null)
+            if (userForUpdate.Image != null)
             {
-                user.City = userForUpdate.City;
+                user.ProfileImage = userForUpdate.Image;
             }
             // if (userForUpdate.Birth != null)
             // {
@@ -246,7 +247,7 @@ namespace LimousineApi.Serveries
             // }
 
             await _context.SaveChangesAsync();
-            return true;
+            return user;
         }
 
 

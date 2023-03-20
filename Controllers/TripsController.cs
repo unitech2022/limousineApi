@@ -38,6 +38,15 @@ namespace LimousineApi.Controllers
         }
 
 
+        [HttpPost]
+        [Route("change_status_trip")]
+        public async Task<ActionResult> ChangeStatusTrip([FromForm] int tripId,[FromForm] int status,[FromForm] string userId)
+        {
+
+            return Ok(await _repository.ChangeStatusTrip(tripId,status,userId));
+        }
+
+
         [HttpGet]
         [Route("home_user")]
         public async Task<ActionResult> HomeUser([FromForm] string UserId)
@@ -45,6 +54,20 @@ namespace LimousineApi.Controllers
             
             return Ok(await _repository.GetHomeUser(UserId));
         }
+  [HttpGet]
+        [Route("histories-user")]
+        public async Task<ActionResult> HistoriesUser([FromForm] string UserId)
+        {
+            
+            return Ok(await _repository.GetHistoryTripsUser(UserId));
+        }
 
+          [HttpGet]
+        [Route("histories-driver")]
+        public async Task<ActionResult> HistoriesDriver([FromForm] int driverId)
+        {
+            
+            return Ok(await _repository.GetHistoryTripsDriver(driverId));
+        }
     }
 }

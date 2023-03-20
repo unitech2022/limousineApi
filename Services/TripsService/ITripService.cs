@@ -14,10 +14,14 @@ namespace LimousineApi.Services.TripsService
         Task<dynamic> GitDriverTrip(int driverId);
 
           Task<ResponseHomeUser> GetHomeUser(string UserId);
+
+
+           Task<dynamic> GetHistoryTripsUser(string UserId);
+             Task<dynamic> GetHistoryTripsDriver(int driverId);
         Task<dynamic> AddTrip(Trip trip);
 
         Task<dynamic> AcceptTrip(int tripId,int driverId);
-        Task<dynamic> ChangeStatusTrip(int TripId, int Status);
+        Task<dynamic> ChangeStatusTrip(int TripId, int Status,string UserId);
 
     }
 }

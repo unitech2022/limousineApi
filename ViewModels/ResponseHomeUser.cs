@@ -11,6 +11,8 @@ namespace LimousineApi.ViewModels
         public Trip? trip { get; set; }
        public Driver? driver { get; set; }
 
+         public UserDetailResponse? DriverDetails { get; set; }
+
         public UserDetailResponse? userDetail { get; set; }
         public bool tripActive { get; set; }
 

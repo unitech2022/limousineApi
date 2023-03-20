@@ -1,7 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
+using LimousineApi.Data;
+using LimousineApi.Models;
+using LimousineApi.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace WajedApi.Helpers
 {
@@ -35,5 +43,65 @@ namespace WajedApi.Helpers
 
         return dDistance;
     }
+    
+    
+    // string modle, string modleId,,NotificationData notificationData
+        public static async Task<bool> SendNotificationAsync(AppDBcontext _context, string userId, string title, string body, string image
+        )
+    {
+        User? user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+        Notification notif = new Notification()
+        {
+            Body = body,
+            Title = title,
+            TitleEng=body,
+            BodyEng=title,
+         //   Modle = modle ?? "user",
+            UserId = userId,
+            ModelId = "0000",
+            // Image = user.ProfileImage ?? "a.jpg",
+            IsRead = 1,
+
+        };
+
+          
+
+
+        await _context.Notifications!.AddAsync(notif);
+        await _context.SaveChangesAsync();
+
+        string token = user!.DeviceToken!;
+        using (var client = new HttpClient())
+        {
+            var firebaseOptionsServerId = "AAAAvPS7SPE:APA91bE_ID5rnop9OMpUK02GulrdZAre4esBUXhLnFeqfRDR-RWugiRa29YvdVzT_mU6mppprbPTOGq0Vcdk5uiSf3kEi8ZoY1ui0EmoswqNxtpB-BbYq6l-uNoLLGav5qLxCOvkJCzY";
+
+            client.BaseAddress = new Uri("https://fcm.googleapis.com");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization",
+                $"key={firebaseOptionsServerId}");
+            var data = new
+            {
+                to = token,
+                notification = new
+                {
+                    body = body,
+                    title = title,
+                },
+                click_action = "FLUTTER_NOTIFICATION_CLICK",
+                priority = "high",
+
+            };
+
+
+            var json = JsonConvert.SerializeObject(data);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var result = await client.PostAsync("/fcm/send", httpContent);
+
+            return result.StatusCode.Equals(HttpStatusCode.OK);
+        }
+    }
+
+
+    
     }
 }

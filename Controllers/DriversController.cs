@@ -43,12 +43,27 @@ namespace LimousineApi.Controllers
 
 
         [HttpPost]
-        [Route("update-driver")]
+        [Route("update-driver-location")]
         public async Task<ActionResult> UpdateDriverLocation([FromForm] AddressModel address, [FromForm] int driverId)
         {
             return Ok(await _repository.UpdateDriverLocation(address, driverId));
         }
 
+
+
+           [HttpPost]
+        [Route("update-driver")]
+        public async Task<ActionResult> UpdateDriver([FromForm] Driver update)
+        {
+            return Ok(await _repository.UpdateDriver(update));
+        }
+
+        [HttpPost]
+        [Route("update-status-driver")]
+        public async Task<ActionResult> UpdateStatusDriver([FromForm] int status, [FromForm] int driverId)
+        {
+            return Ok(await _repository.ChangeDriverStatus(driverId, status));
+        }
 
         [HttpGet]
         [Route("get-drivers")]
@@ -58,6 +73,14 @@ namespace LimousineApi.Controllers
             return Ok(await _repository.GetItems(UserId));
         }
 
+
+       [HttpGet]
+        [Route("get-driver-by-id")]
+        public async Task<ActionResult> GetDriverById([FromQuery] int driverId)
+        {
+
+            return Ok(await _repository.GetDriverById(driverId));
+        }
 
         [HttpGet]
         [Route("get-driver-home")]

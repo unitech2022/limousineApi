@@ -11,9 +11,19 @@ using WajedApi.Helpers;
 
 namespace LimousineApi.Services.TripsService
 {
+
+
+
     public class TripService : ITripService
     {
-
+        string[] statuesTrip = { "رحلة جديدة",
+                        "تم القبول من السائق",
+                        "السائق وصل  ",
+                        "تم الركوب" ,
+                        "تم الوصول للوجهة ",
+                         "تم التأكيد من السائق",
+                        "تم التأكيد من العميل",
+                         "تم الغاء الرحلة" };
         private readonly IMapper _mapper;
         private readonly AppDBcontext _context;
 
@@ -46,26 +56,30 @@ namespace LimousineApi.Services.TripsService
 
             List<Driver> drivers = await _context.Drivers!.Where(t => t.Status == 1).ToListAsync();
             trip.driverId = 0;
-             if(drivers.Count >0){
-               foreach (var item in drivers)
+            if (drivers.Count > 0)
             {
-                double distance = Functions.GetDistance(item!.Lat??0.0,item.Lng ?? 0.0, trip!.startPointLat, trip!.startPointLng);
-                Console.WriteLine("distance" + distance);
-                if (distance < 30)
+                foreach (var item in drivers)
                 {
-                    trip.driverId = item.Id;
+                    double distance = Functions.GetDistance(item!.Lat ?? 0.0, item.Lng ?? 0.0, trip!.startPointLat, trip!.startPointLng);
+                    Console.WriteLine("distance" + distance);
+                    if (distance < 60)
+                    {
+                        trip.driverId = item.Id;
 
+
+                    }
 
                 }
-
             }
-         }
             Driver? driver = await _context.Drivers!.FirstOrDefaultAsync(t => t.Id == trip.driverId);
             if (driver != null)
             {
                 driver!.Status = 0;
                 _context.SaveChanges();
+                await Functions.SendNotificationAsync(_context, driver!.UserId!, "رحلة جديدة", "رحلة جديدة", "");
             }
+
+
 
             await _context.Trips!.AddAsync(trip);
             await _context.SaveChangesAsync();
@@ -74,9 +88,39 @@ namespace LimousineApi.Services.TripsService
 
         }
 
-        public Task<dynamic> ChangeStatusTrip(int TripId, int Status)
+        public async Task<dynamic> ChangeStatusTrip(int TripId, int Status, string UserId)
         {
-            throw new NotImplementedException();
+            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.id == TripId);
+            Driver? driver = await _context.Drivers!.FirstOrDefaultAsync(t => t.Id == trip!.driverId);
+
+            if (driver != null)
+            {
+                if (Status == 8)
+                {
+                    driver.Status = 1;
+                    _context.SaveChanges();
+                }
+                else if (Status == 1)
+                {
+                    driver.Status = 0;
+                    _context.SaveChanges();
+                }
+            }
+
+
+            if (trip != null)
+            {
+                trip.status = Status;
+            }
+            _context.SaveChanges();
+            User? user = await _context.Users.FirstOrDefaultAsync(t => t.Id == UserId);
+            if (user != null)
+            {
+                await Functions.SendNotificationAsync(_context, user!.Id, "تم تغيير حالة الرحلة ", statuesTrip![Status], "");
+            }
+
+            return trip!;
+
         }
 
         public Task<dynamic> DeleteAsync(int typeId)
@@ -84,21 +128,25 @@ namespace LimousineApi.Services.TripsService
             throw new NotImplementedException();
         }
 
+      
         public async Task<ResponseHomeUser> GetHomeUser(string UserId)
         {
-            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.userId == UserId && t.status != 8);
+            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.userId == UserId && t.status != 7);
             Driver? driver = null;
-            UserDetailResponse? userDetail = null;
+            UserDetailResponse? driverDetail = null;
+            User? user1 = await _context.Users.FirstOrDefaultAsync(t => t.Id == UserId);
+            UserDetailResponse? userDetail = _mapper.Map<UserDetailResponse>(user1);
             bool activeTrip = false;
             if (trip != null)
             {
                 activeTrip = true;
                 driver = await _context.Drivers!.FirstOrDefaultAsync(t => t.Id == trip.driverId);
-                if(driver!=null){
-               User? user = await _context.Users.FirstOrDefaultAsync(t => t.Id == driver!.UserId);
-                userDetail = _mapper.Map<UserDetailResponse>(user);
+                if (driver != null)
+                {
+                    User? user = await _context.Users.FirstOrDefaultAsync(t => t.Id == driver!.UserId);
+                    driverDetail = _mapper.Map<UserDetailResponse>(user);
                 }
-               
+
             }
 
             ResponseHomeUser responseHomeUser = new ResponseHomeUser
@@ -106,7 +154,8 @@ namespace LimousineApi.Services.TripsService
                 trip = trip,
                 tripActive = activeTrip,
                 driver = driver,
-                userDetail = userDetail
+                userDetail = userDetail,
+                DriverDetails = driverDetail
             };
             return responseHomeUser;
         }
@@ -140,5 +189,79 @@ namespace LimousineApi.Services.TripsService
         {
             throw new NotImplementedException();
         }
+
+        public async Task<dynamic> GetHistoryTripsUser(string UserId)
+        {
+            List<HistoryResponse> histories = new List<HistoryResponse>();
+
+            List<Trip> canceledTrips = await _context.Trips!.Where(t => t.userId == UserId).ToListAsync();
+            foreach (var item in canceledTrips)
+            {
+                UserDetailResponse? userDetailResponse = null;
+                CarType? carType = null;
+                Driver? driver = await _context.Drivers!.FirstOrDefaultAsync(t => t.Id == item.driverId);
+                if (driver != null)
+                {
+                    User? user = await _context.Users.FirstOrDefaultAsync(t => t.Id == driver.UserId);
+
+                    userDetailResponse = _mapper.Map<UserDetailResponse>(user);
+                    carType = await _context.CarTypes!.FirstOrDefaultAsync(t => t.Id == driver.CarModelId);
+                }
+
+                HistoryResponse historyResponse = new HistoryResponse
+                {
+                    driver = driver,
+                    userDetailDiver = userDetailResponse,
+                    trip = item,
+                    carType = carType
+                };
+                histories.Add(historyResponse);
+
+            }
+
+            return new
+            {
+                canceledTrips = histories.Where(t => t.trip.status == 7),
+                doneTrips = histories.Where(t => t.trip.status == 6)
+            };
+        }
+   
+   
+        public async Task<dynamic> GetHistoryTripsDriver(int driverId)
+        {
+            List<HistoryResponse> histories = new List<HistoryResponse>();
+
+            List<Trip> canceledTrips = await _context.Trips!.Where(t => t.driverId == driverId).ToListAsync();
+            foreach (var item in canceledTrips)
+            {
+                UserDetailResponse? userDetailResponse = null;
+                CarType? carType = null;
+                Driver? driver = await _context.Drivers!.FirstOrDefaultAsync(t => t.Id == item.driverId);
+                if (driver != null)
+                {
+                    User? user = await _context.Users.FirstOrDefaultAsync(t => t.Id == driver.UserId);
+
+                    userDetailResponse = _mapper.Map<UserDetailResponse>(user);
+                    carType = await _context.CarTypes!.FirstOrDefaultAsync(t => t.Id == driver.CarModelId);
+                }
+
+                HistoryResponse historyResponse = new HistoryResponse
+                {
+                    driver = driver,
+                    userDetailDiver = userDetailResponse,
+                    trip = item,
+                    carType = carType
+                };
+                histories.Add(historyResponse);
+
+            }
+
+            return new
+            {
+                canceledTrips = histories.Where(t => t.trip.status == 7),
+                doneTrips = histories.Where(t => t.trip.status == 6)
+            };
+        }
+   
     }
 }

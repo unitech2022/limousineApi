@@ -84,8 +84,10 @@ namespace LimousineApi.Services.DriverService
 
         public async Task<dynamic> HomeDriver(string userId, AddressModel addressModel)
         {
+          
             Driver? driver = await _context.Drivers!.FirstOrDefaultAsync(t => t.UserId == userId);
-            User? user = await _context.Users!.FirstOrDefaultAsync(t => t.Id == userId);
+            User? user1 = await _context.Users!.FirstOrDefaultAsync(t => t.Id == driver!.UserId);
+           UserDetailResponse?  userDetailDriver=_mapper.Map<UserDetailResponse>(user1);
             //  update lat lng    
             if (driver != null)
             {
@@ -96,18 +98,58 @@ namespace LimousineApi.Services.DriverService
             }
 
          
-
-            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.status == 0 && t.driverId == driver!.Id);
+             UserDetailResponse? userDetailResponse = null;
+            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.status != 8 && t.driverId == driver!.Id);
+            if(trip != null){
+                  User? user = await _context.Users!.FirstOrDefaultAsync(t => t.Id == trip.userId);
+               userDetailResponse=_mapper.Map<UserDetailResponse>(user);
+            }
 
             ResponseHomeDriver homeDriver = new ResponseHomeDriver
             {
                 driver = driver,
-                user = user,
-                trip = trip
+                user = userDetailResponse,
+                trip = trip,
+                driverUser = userDetailDriver
             };
 
 
             return homeDriver;
+        }
+
+        public async Task<dynamic> ChangeDriverStatus(int driverId,int status)
+        {
+              Driver? driver = await _context.Drivers!.FirstOrDefaultAsync(t => t.Id == driverId);
+              if(driver !=null){
+                driver.Status = status;
+                _context.SaveChanges();
+              }
+              return driver!;
+        }
+
+        public async Task<dynamic> UpdateDriver(Driver driverUpdate)
+        {
+            Driver? driver =await _context.Drivers!.FirstOrDefaultAsync(t => t.Id ==driverUpdate.Id);
+            if(driverUpdate.CarImage !=null){
+                driver!.CarImage=driverUpdate.CarImage;
+            }
+
+             if(driverUpdate.Passport !=null){
+                driver!.Passport=driverUpdate.Passport;
+            }
+
+             if(driverUpdate.DrivingLicense !=null){
+                driver!.DrivingLicense=driverUpdate.DrivingLicense;
+            }
+
+          await  _context.SaveChangesAsync();
+          return driver!;
+        }
+
+        public async Task<dynamic> GetDriverById(int driverId)
+        {
+           Driver? driver =await _context.Drivers!.FirstOrDefaultAsync(t => t.Id==driverId);
+           return driver!;
         }
     }
 }

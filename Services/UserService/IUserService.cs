@@ -12,6 +12,8 @@ namespace LimousineApi.Serveries
 		Task<object> LoginUser(UserForLogin userForLogin);
 		Task<object> RegisterAdmin(UserForRegister adminForRegister);
 		Task<object> UpdateUser(UserForUpdate userForUpdate);
+
+		Task<object> UpdateDeviceToken(string Token,string UserId);
 		Task<User> GetUser(string UserId);
 	}
 }

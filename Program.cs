@@ -5,6 +5,7 @@ using LimousineApi.Profils;
 using LimousineApi.Serveries;
 using LimousineApi.Services.CarTypesService;
 using LimousineApi.Services.DriverService;
+using LimousineApi.Services.NotificationsService;
 using LimousineApi.Services.TripsService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -47,7 +48,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<ICarTypesService, CarTypesService>();
 builder.Services.AddScoped<ITripService, TripService>();
-
+builder.Services.AddScoped<INotificationsService, NotificationsService>();
 
 
 builder.Services.AddCors(
@@ -119,8 +120,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
+app.UseCors("AllowOrigin");
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
