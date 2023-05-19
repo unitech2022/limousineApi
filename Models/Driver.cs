@@ -21,12 +21,14 @@ namespace LimousineApi.Models
 
         public int Status { get; set; }
 
+ public double? Rate { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public Driver()
         {
 			Lat =0.0;
 			Lng=0.0;
+            Rate=0.0;
 
             CreatedAt = DateTime.UtcNow.AddHours(3);
         }

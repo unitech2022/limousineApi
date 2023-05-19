@@ -86,6 +86,7 @@ namespace LimousineApi.Services.DriverService
         {
           
             Driver? driver = await _context.Drivers!.FirstOrDefaultAsync(t => t.UserId == userId);
+           
             User? user1 = await _context.Users!.FirstOrDefaultAsync(t => t.Id == driver!.UserId);
            UserDetailResponse?  userDetailDriver=_mapper.Map<UserDetailResponse>(user1);
             //  update lat lng    
@@ -99,7 +100,7 @@ namespace LimousineApi.Services.DriverService
 
          
              UserDetailResponse? userDetailResponse = null;
-            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.status != 8 && t.driverId == driver!.Id);
+            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.status < 6 && t.driverId == driver!.Id);
             if(trip != null){
                   User? user = await _context.Users!.FirstOrDefaultAsync(t => t.Id == trip.userId);
                userDetailResponse=_mapper.Map<UserDetailResponse>(user);

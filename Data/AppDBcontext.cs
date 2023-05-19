@@ -27,13 +27,13 @@ namespace LimousineApi.Data
 
         public DbSet<Notification>? Notifications { get; set; }
 
-        // public DbSet<Field>? Fields { get; set; }
+         public DbSet<Address>? Addresses { get; set; }
 
-        // public DbSet<Offer>? Offers { get; set; }
+        public DbSet<Group>? Groups { get; set; }
 
-        // public DbSet<Order>? Orders { get; set; }
+        public DbSet<GroupLocation>? GroupLocations { get; set; }
 
-        // public DbSet<OrderItem>? OrderItems { get; set; }
+         public DbSet<City> Cities { get; set; }
 
         // public DbSet<OrderItemOption>? OrderItemOptions { get; set; }
 
@@ -43,7 +43,7 @@ namespace LimousineApi.Data
 
         //  public DbSet<Market>? Markets { get; set; }
 
-        //   public DbSet<Rate>? Rates { get; set; }
+         public DbSet<Rate>? Rates { get; set; }
 
         //  public DbSet<Coupon>? Coupons { get; set; }
     

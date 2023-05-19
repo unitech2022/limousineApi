@@ -39,6 +39,8 @@ namespace LimousineApi.Services.TripsService
             throw new NotImplementedException();
         }
 
+
+       // not available
         public async Task<dynamic> AddAsync(dynamic type)
         {
 
@@ -50,8 +52,8 @@ namespace LimousineApi.Services.TripsService
 
             return type;
         }
-
-        public async Task<dynamic> AddTrip(Trip trip)
+ 
+        public async Task<dynamic> AddTrip(Trip trip,int type)
         {
 
             List<Driver> drivers = await _context.Drivers!.Where(t => t.Status == 1).ToListAsync();
@@ -62,12 +64,21 @@ namespace LimousineApi.Services.TripsService
                 {
                     double distance = Functions.GetDistance(item!.Lat ?? 0.0, item.Lng ?? 0.0, trip!.startPointLat, trip!.startPointLng);
                     Console.WriteLine("distance" + distance);
-                    if (distance < 60)
+                   if(type==0){
+                     if ( distance < 60)
                     {
                         trip.driverId = item.Id;
 
 
                     }
+                   }else {
+                     if ( distance < 1000)
+                    {
+                        trip.driverId = item.Id;
+
+
+                    }
+                   }
 
                 }
             }
@@ -95,7 +106,7 @@ namespace LimousineApi.Services.TripsService
 
             if (driver != null)
             {
-                if (Status == 8)
+                if (Status == 7 || Status==6)
                 {
                     driver.Status = 1;
                     _context.SaveChanges();
@@ -131,7 +142,8 @@ namespace LimousineApi.Services.TripsService
       
         public async Task<ResponseHomeUser> GetHomeUser(string UserId)
         {
-            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.userId == UserId && t.status != 7);
+            List<Address>? addresses =await _context.Addresses!.Where(t => t.UserId==UserId).ToListAsync();
+            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.userId == UserId && t.status < 6 );
             Driver? driver = null;
             UserDetailResponse? driverDetail = null;
             User? user1 = await _context.Users.FirstOrDefaultAsync(t => t.Id == UserId);
@@ -151,6 +163,7 @@ namespace LimousineApi.Services.TripsService
 
             ResponseHomeUser responseHomeUser = new ResponseHomeUser
             {
+                Addresses=addresses,        
                 trip = trip,
                 tripActive = activeTrip,
                 driver = driver,

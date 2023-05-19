@@ -3,9 +3,13 @@ using LimousineApi.Data;
 using LimousineApi.Models;
 using LimousineApi.Profils;
 using LimousineApi.Serveries;
+using LimousineApi.Services.AddressesServices;
 using LimousineApi.Services.CarTypesService;
 using LimousineApi.Services.DriverService;
+using LimousineApi.Services.GroupLocationsServices;
+using LimousineApi.Services.GroupsServices;
 using LimousineApi.Services.NotificationsService;
+using LimousineApi.Services.RateServices;
 using LimousineApi.Services.TripsService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -48,8 +52,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<ICarTypesService, CarTypesService>();
 builder.Services.AddScoped<ITripService, TripService>();
-builder.Services.AddScoped<INotificationsService, NotificationsService>();
-
+builder.Services.AddScoped<IAddressesServices, AddressesServices>();
+builder.Services.AddScoped<IRateServices, RateServices>();
+builder.Services.AddScoped<IGroupsLocationServices, GroupLocationsServices>();
+builder.Services.AddScoped<IGroupsServices, GroupsServices>();
 
 builder.Services.AddCors(
     options =>
@@ -114,6 +120,8 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 // Configure the HTTP request pipeline.
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -123,6 +131,7 @@ if (app.Environment.IsDevelopment())
 // app.UseHttpsRedirection();
 
 app.UseCors("AllowOrigin");
+
 app.UseRouting();
 
 app.UseAuthentication();

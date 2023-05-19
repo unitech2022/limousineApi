@@ -25,14 +25,14 @@ namespace LimousineApi.Controllers
 
         [HttpPost]
         [Route("add-trip")]
-        public async Task<ActionResult> AddTrip([FromForm] Trip trip)
+        public async Task<ActionResult> AddTrip([FromForm] Trip trip,[FromForm] int type)
         {
             if (trip == null)
             {
                 return NotFound();
             }
 
-            await _repository.AddTrip(trip);
+            await _repository.AddTrip(trip,type);
 
             return Ok(trip);
         }

@@ -11,6 +11,9 @@ namespace LimousineApi.ViewModels
         public Trip? trip { get; set; }
        public Driver? driver { get; set; }
 
+
+       public List<Address>? Addresses { get; set; }
+
          public UserDetailResponse? DriverDetails { get; set; }
 
         public UserDetailResponse? userDetail { get; set; }

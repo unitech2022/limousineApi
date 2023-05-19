@@ -18,7 +18,7 @@ namespace LimousineApi.Services.TripsService
 
            Task<dynamic> GetHistoryTripsUser(string UserId);
              Task<dynamic> GetHistoryTripsDriver(int driverId);
-        Task<dynamic> AddTrip(Trip trip);
+        Task<dynamic> AddTrip(Trip trip,int type);
 
         Task<dynamic> AcceptTrip(int tripId,int driverId);
         Task<dynamic> ChangeStatusTrip(int TripId, int Status,string UserId);
