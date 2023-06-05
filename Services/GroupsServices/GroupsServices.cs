@@ -10,6 +10,7 @@ using LimousineApi.Models;
 using X.PagedList;
 using LimousineApi.Models.BaseEntity;
 using LimousineApi.ViewModels;
+using WajedApi.Helpers;
 
 namespace LimousineApi.Services.GroupsServices
 {
@@ -39,7 +40,10 @@ namespace LimousineApi.Services.GroupsServices
                 {
 
                     item.driverId = driverId;
-
+                  User? user=await _context.Users.FirstOrDefaultAsync(t => t.Id==item.userId);
+                  if(user!=null){
+                     await Functions.SendNotificationAsync(_context, user.Id!,"رحلاتى الخارجية", "تم قبول رحلتك من السائق", "");
+                  }
                 }
                 await _context.SaveChangesAsync();
             }
@@ -69,6 +73,18 @@ namespace LimousineApi.Services.GroupsServices
             }
 
             return group!;
+        }
+
+        public async Task<dynamic> GetGroupByDriverId(int driverId)
+        {
+               List<Group> currentGroups = await _context.Groups!.OrderByDescending(t=> t.CreatedAt).Where(t => t.status == 0).ToListAsync();
+
+               List<Group> finishedGroups = await _context.Groups!.OrderByDescending(t=> t.CreatedAt).Where(t =>t.driverId==driverId&& t.status != 0).ToListAsync();
+
+               return new {
+                currentGroups =currentGroups,
+                finishedGroups =finishedGroups
+               };
         }
 
         public async Task<dynamic> GetGroupDetails(int groupId)

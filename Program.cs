@@ -4,8 +4,10 @@ using LimousineApi.Models;
 using LimousineApi.Profils;
 using LimousineApi.Serveries;
 using LimousineApi.Services.AddressesServices;
+using LimousineApi.Services.BookingServices;
 using LimousineApi.Services.CarTypesService;
 using LimousineApi.Services.DriverService;
+using LimousineApi.Services.ExternalTripsService;
 using LimousineApi.Services.GroupLocationsServices;
 using LimousineApi.Services.GroupsServices;
 using LimousineApi.Services.NotificationsService;
@@ -52,10 +54,14 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IDriverService, DriverService>();
 builder.Services.AddScoped<ICarTypesService, CarTypesService>();
 builder.Services.AddScoped<ITripService, TripService>();
+builder.Services.AddScoped<IExternalTripService, ExternalTripService>();
 builder.Services.AddScoped<IAddressesServices, AddressesServices>();
 builder.Services.AddScoped<IRateServices, RateServices>();
 builder.Services.AddScoped<IGroupsLocationServices, GroupLocationsServices>();
 builder.Services.AddScoped<IGroupsServices, GroupsServices>();
+builder.Services.AddScoped<IBookingServices, BookingServices>();
+
+
 
 builder.Services.AddCors(
     options =>

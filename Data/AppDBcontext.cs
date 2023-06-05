@@ -35,9 +35,9 @@ namespace LimousineApi.Data
 
          public DbSet<City> Cities { get; set; }
 
-        // public DbSet<OrderItemOption>? OrderItemOptions { get; set; }
+         public DbSet<ExternalTrip>? ExternalTrips { get; set; }
 
-        // public DbSet<Product>? Products { get; set; }
+      public DbSet<Booking>? Bookings { get; set; }
 
         // public DbSet<ProductsOption>? ProductsOptions { get; set; }
 

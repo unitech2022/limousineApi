@@ -11,7 +11,7 @@ namespace LimousineApi.Models
 
         public double price { get; set; }
 
-
+       public int driverId { get; set; }
         public string? startCity { get; set; }
 
         public string? endCity { get; set; }
@@ -22,7 +22,7 @@ namespace LimousineApi.Models
         public Group()
         {
             status = 0;
-            
+            driverId=0;
             CreatedAt = DateTime.UtcNow.AddHours(3);
         }
     }

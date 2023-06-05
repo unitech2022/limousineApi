@@ -39,12 +39,15 @@ namespace LimousineApi.Controllers
 
 
         [HttpGet]
-        [Route("get-groups")]
-        public async Task<ActionResult> GetGroups()
+        [Route("get-groups-by-driver-id")]
+        public async Task<ActionResult> GetGroupsByDriverId([FromQuery] int driverId)
         {
 
-            return Ok(await _repository.GetItems("UserId"));
+            return Ok(await _repository.GetGroupByDriverId(driverId));
         }
+
+
+
 
         [HttpGet]
         [Route("get-group-by-id")]

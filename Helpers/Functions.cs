@@ -102,6 +102,57 @@ namespace WajedApi.Helpers
     }
 
 
-    
+       public static string SendNotificationFromFirebaseCloudTopic(string topics, string title, string body)
+        {
+            WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
+            tRequest.Method = "post";
+            //serverKey - Key from Firebase cloud messaging server  
+            tRequest.Headers.Add(string.Format("Authorization: key={0}", "AAAAvPS7SPE:APA91bE_ID5rnop9OMpUK02GulrdZAre4esBUXhLnFeqfRDR-RWugiRa29YvdVzT_mU6mppprbPTOGq0Vcdk5uiSf3kEi8ZoY1ui0EmoswqNxtpB-BbYq6l-uNoLLGav5qLxCOvkJCzY"));
+            //Sender Id - From firebase project setting  
+            tRequest.Headers.Add(string.Format("Sender: id={0}", "811559766257"));
+            tRequest.ContentType = "application/json";
+            var payload = new
+            {
+                to = "/topics/" + topics,
+                priority = "high",
+                content_available = true,
+                notification = new
+                {
+                    body = body,
+                    title = title,
+                    badge = 1
+                },
+                data = new
+                {
+                    subject = title,
+                    imageUrl = "",
+                    desc = body,
+                    data = DateTime.Now.ToString()
+                }
+
+            };
+
+            string postbody = JsonConvert.SerializeObject(payload).ToString();
+            Byte[] byteArray = Encoding.UTF8.GetBytes(postbody);
+            tRequest.ContentLength = byteArray.Length;
+            using (Stream dataStream = tRequest.GetRequestStream())
+            {
+                dataStream.Write(byteArray, 0, byteArray.Length);
+                using (WebResponse tResponse = tRequest.GetResponse())
+                {
+                    using (Stream dataStreamResponse = tResponse.GetResponseStream())
+                    {
+                        if (dataStreamResponse != null) using (StreamReader tReader = new StreamReader(dataStreamResponse))
+                            {
+                                String sResponseFromServer = tReader.ReadToEnd();
+                                //result.Response = sResponseFromServer;
+                            }
+                    }
+                }
+            }
+
+            return topics;
+        }
+
     }
 }

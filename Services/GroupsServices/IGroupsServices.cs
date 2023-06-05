@@ -11,6 +11,8 @@ namespace LimousineApi.Services.GroupsServices
         Task<dynamic> AcceptGroup(int driverId,int status,int groupId);
 
          Task<dynamic> GetGroupDetails(int groupId);
+
+         Task<dynamic> GetGroupByDriverId(int driverId);
       
         
     }

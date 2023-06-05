@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using LimousineApi.Dtos;
 using LimousineApi.Models;
 using LimousineApi.ViewModels;
 
@@ -15,7 +16,7 @@ namespace LimousineApi.Profils
             CreateMap<UserForRegister, User>();
             CreateMap<User, UserDetailResponse>();
 
-            // CreateMap<UpdateCategoryDto, Category>();
+          CreateMap<UpdateExternalTripDto, ExternalTrip>();
             // CreateMap<UpdateFieldDto, Field>();
 
             // CreateMap<UpdateProductDto, Product>();

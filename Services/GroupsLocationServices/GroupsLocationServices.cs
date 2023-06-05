@@ -5,7 +5,7 @@ using LimousineApi.Data;
 using LimousineApi.Models;
 
 using X.PagedList;
-
+using WajedApi.Helpers;
 
 namespace LimousineApi.Services.GroupLocationsServices
 {
@@ -44,18 +44,22 @@ namespace LimousineApi.Services.GroupLocationsServices
                     startCity = groupLocation.startLocation,
                     endCity = groupLocation.endLocation,
                     price = 200,
-                    peoples=1
+                    peoples = 1
                 };
                 await _context.Groups!.AddAsync(group1);
                 await _context.SaveChangesAsync();
                 groupLocation.groupId = group1.id;
+                
+                // send notifications
+                Functions.SendNotificationFromFirebaseCloudTopic("driver", "رحلة خارجية", "تم اضافة رحلة خارجية");
+
             }
             else
             {
-                
-               groupLocation.groupId=group.id;
-               group.peoples=group.peoples + 1 ;
-               
+
+                groupLocation.groupId = group.id;
+                group.peoples = group.peoples + 1;
+
             }
             await _context.GroupLocations!.AddAsync(groupLocation);
 

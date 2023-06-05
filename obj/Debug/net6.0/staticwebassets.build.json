@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "EP6sjcds9aMkc9O1lIxEQLYtZII8QlfCrOWwcsXx7yE=",
+  "Hash": "/nNKmQR/QExNv/NdFWi2Yzg64Gm3FuVMCxkuw1ZEKuw=",
   "Source": "LimousineApi",
   "BasePath": "_content/LimousineApi",
   "Mode": "Default",
@@ -1715,6 +1715,57 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/20230404T001819.jpeg"
+    },
+    {
+      "Identity": "/Users/gatekee/projects/webProjects/LimousineApi/wwwroot/images/20230518T191502.jpeg",
+      "SourceId": "LimousineApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/gatekee/projects/webProjects/LimousineApi/wwwroot/",
+      "BasePath": "_content/LimousineApi",
+      "RelativePath": "images/20230518T191502.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/20230518T191502.jpeg"
+    },
+    {
+      "Identity": "/Users/gatekee/projects/webProjects/LimousineApi/wwwroot/images/20230518T191512.jpeg",
+      "SourceId": "LimousineApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/gatekee/projects/webProjects/LimousineApi/wwwroot/",
+      "BasePath": "_content/LimousineApi",
+      "RelativePath": "images/20230518T191512.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/20230518T191512.jpeg"
+    },
+    {
+      "Identity": "/Users/gatekee/projects/webProjects/LimousineApi/wwwroot/images/20230518T191518.jpeg",
+      "SourceId": "LimousineApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/gatekee/projects/webProjects/LimousineApi/wwwroot/",
+      "BasePath": "_content/LimousineApi",
+      "RelativePath": "images/20230518T191518.jpeg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/20230518T191518.jpeg"
     }
   ]
 }

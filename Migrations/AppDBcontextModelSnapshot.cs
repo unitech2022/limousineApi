@@ -48,6 +48,32 @@ namespace LimousineApi.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("LimousineApi.Models.Booking", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("driverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("externalTripId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("userId")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Bookings");
+                });
+
             modelBuilder.Entity("LimousineApi.Models.CarType", b =>
                 {
                     b.Property<int>("Id")
@@ -144,6 +170,65 @@ namespace LimousineApi.Migrations
                     b.ToTable("Drivers");
                 });
 
+            modelBuilder.Entity("LimousineApi.Models.ExternalTrip", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("Sets")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartingAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("bookings")
+                        .HasColumnType("int");
+
+                    b.Property<int>("driverId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("endCity")
+                        .HasColumnType("longtext");
+
+                    b.Property<double>("endPointLat")
+                        .HasColumnType("double");
+
+                    b.Property<double>("endPointLng")
+                        .HasColumnType("double");
+
+                    b.Property<string>("name")
+                        .HasColumnType("longtext");
+
+                    b.Property<double>("price")
+                        .HasColumnType("double");
+
+                    b.Property<string>("startCity")
+                        .HasColumnType("longtext");
+
+                    b.Property<double>("startPointLat")
+                        .HasColumnType("double");
+
+                    b.Property<double>("startPointLng")
+                        .HasColumnType("double");
+
+                    b.Property<int>("status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("userId")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("id");
+
+                    b.ToTable("ExternalTrips");
+                });
+
             modelBuilder.Entity("LimousineApi.Models.Group", b =>
                 {
                     b.Property<int>("id")
@@ -152,6 +237,9 @@ namespace LimousineApi.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<int>("driverId")
+                        .HasColumnType("int");
 
                     b.Property<string>("endCity")
                         .HasColumnType("longtext");

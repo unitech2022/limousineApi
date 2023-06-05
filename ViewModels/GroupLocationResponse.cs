@@ -11,4 +11,10 @@ namespace LimousineApi.ViewModels
         public GroupLocation? groupLocation { get; set; }
         public UserDetailResponse? userDetail { get; set; }
     }
+
+      public class ExternalTripDetails
+    {
+        public ExternalTrip? trip { get; set; }
+        public UserDetailResponse? userDetail { get; set; }
+    }
 }
