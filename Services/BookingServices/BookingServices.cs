@@ -133,6 +133,17 @@ namespace LimousineApi.Services.BookingServices
                     externalTrip!.bookings = externalTrip.bookings - 1;
 
                     _context.SaveChanges();
+                    double tax = externalTrip!.price * 10 / 100;
+                    if (externalTrip.Payment == 0)
+                    {
+                        driver!.Wallet += tax;
+
+                    }
+                    else
+                    {
+                        double points = externalTrip!.price - tax;
+                        driver!.Wallet -= points;
+                    }
                     //  
                     if (type == 0)
                     {

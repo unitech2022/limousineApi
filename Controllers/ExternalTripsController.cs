@@ -112,5 +112,13 @@ namespace LimousineApi.Controllers
 
             return Ok(await _repository.SearchToExternalTrip(startCity, endCity, date));
         }
+
+        [HttpPost]
+        [Route("payMent_external_trip")]
+        public async Task<ActionResult> PaymentExternalTrip([FromForm] int tripId,[FromForm] int payment,[FromForm] string userId)
+        {
+
+            return Ok(await _repository.PaymentExternalTrip(tripId,payment,userId));
+        }
     }
 }

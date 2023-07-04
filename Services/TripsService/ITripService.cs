@@ -12,7 +12,7 @@ namespace LimousineApi.Services.TripsService
     {
 
         Task<dynamic> GitDriverTrip(int driverId);
-
+  Task<dynamic> PaymentTrip(int tripId,int payment,string userId);
           Task<ResponseHomeUser> GetHomeUser(string UserId);
 
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using LimousineApi.Data;
 using LimousineApi.Models;
+using LimousineApi.Services.WalletsServices;
 using LimousineApi.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using WajedApi.Helpers;
@@ -18,6 +19,7 @@ namespace LimousineApi.Services.TripsService
     {
         string[] statuesTrip = { "رحلة جديدة",
                         "تم القبول من السائق",
+                         "تم الدفع",
                         "السائق وصل  ",
                         "تم الركوب" ,
                         "تم الوصول للوجهة ",
@@ -27,11 +29,14 @@ namespace LimousineApi.Services.TripsService
         private readonly IMapper _mapper;
         private readonly AppDBcontext _context;
 
-        public TripService(IMapper mapper, AppDBcontext context)
+        private readonly IWalletsServices _walletRepo;
+
+        public TripService(IMapper mapper, AppDBcontext context, IWalletsServices walletRepo)
         {
             _mapper = mapper;
 
             _context = context;
+            _walletRepo = walletRepo;
         }
 
         public Task<dynamic> AcceptTrip(int tripId, int driverId)
@@ -39,8 +44,7 @@ namespace LimousineApi.Services.TripsService
             throw new NotImplementedException();
         }
 
-
-       // not available
+        // not available
         public async Task<dynamic> AddAsync(dynamic type)
         {
 
@@ -52,8 +56,8 @@ namespace LimousineApi.Services.TripsService
 
             return type;
         }
- 
-        public async Task<dynamic> AddTrip(Trip trip,int type)
+
+        public async Task<dynamic> AddTrip(Trip trip, int type)
         {
 
             List<Driver> drivers = await _context.Drivers!.Where(t => t.Status == 1).ToListAsync();
@@ -64,21 +68,24 @@ namespace LimousineApi.Services.TripsService
                 {
                     double distance = Functions.GetDistance(item!.Lat ?? 0.0, item.Lng ?? 0.0, trip!.startPointLat, trip!.startPointLng);
                     Console.WriteLine("distance" + distance);
-                   if(type==0){
-                     if ( distance < 60)
+                    if (type == 0)
                     {
-                        trip.driverId = item.Id;
+                        if (distance < 60)
+                        {
+                            trip.driverId = item.Id;
 
 
+                        }
                     }
-                   }else {
-                     if ( distance < 1000)
+                    else
                     {
-                        trip.driverId = item.Id;
+                        if (distance < 1000)
+                        {
+                            trip.driverId = item.Id;
 
 
+                        }
                     }
-                   }
 
                 }
             }
@@ -106,7 +113,7 @@ namespace LimousineApi.Services.TripsService
 
             if (driver != null)
             {
-                if (Status == 7 || Status==6)
+                if (Status == 7 || Status == 6)
                 {
                     driver.Status = 1;
                     _context.SaveChanges();
@@ -125,7 +132,7 @@ namespace LimousineApi.Services.TripsService
             }
             _context.SaveChanges();
             User? user = await _context.Users.FirstOrDefaultAsync(t => t.Id == UserId);
-            if (user != null)
+            if (Status !=8 && user != null && driver != null)
             {
                 await Functions.SendNotificationAsync(_context, user!.Id, "تم تغيير حالة الرحلة ", statuesTrip![Status], "");
             }
@@ -139,11 +146,11 @@ namespace LimousineApi.Services.TripsService
             throw new NotImplementedException();
         }
 
-      
+
         public async Task<ResponseHomeUser> GetHomeUser(string UserId)
         {
-            List<Address>? addresses =await _context.Addresses!.Where(t => t.UserId==UserId).ToListAsync();
-            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.userId == UserId && t.status < 6 );
+            List<Address>? addresses = await _context.Addresses!.Where(t => t.UserId == UserId).ToListAsync();
+            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.userId == UserId && t.status < 7);
             Driver? driver = null;
             UserDetailResponse? driverDetail = null;
             User? user1 = await _context.Users.FirstOrDefaultAsync(t => t.Id == UserId);
@@ -163,7 +170,7 @@ namespace LimousineApi.Services.TripsService
 
             ResponseHomeUser responseHomeUser = new ResponseHomeUser
             {
-                Addresses=addresses,        
+                Addresses = addresses,
                 trip = trip,
                 tripActive = activeTrip,
                 driver = driver,
@@ -234,12 +241,12 @@ namespace LimousineApi.Services.TripsService
 
             return new
             {
-                canceledTrips = histories.Where(t => t.trip.status == 7),
-                doneTrips = histories.Where(t => t.trip.status == 6)
+                canceledTrips = histories.Where(t => t.trip!.status == 7),
+                doneTrips = histories.Where(t => t.trip!.status == 6)
             };
         }
-   
-   
+
+
         public async Task<dynamic> GetHistoryTripsDriver(int driverId)
         {
             List<HistoryResponse> histories = new List<HistoryResponse>();
@@ -271,10 +278,48 @@ namespace LimousineApi.Services.TripsService
 
             return new
             {
-                canceledTrips = histories.Where(t => t.trip.status == 7),
-                doneTrips = histories.Where(t => t.trip.status == 6)
+                canceledTrips = histories.Where(t => t.trip!.status == 7),
+                doneTrips = histories.Where(t => t.trip!.status == 6)
             };
         }
-   
+
+        public async Task<dynamic> PaymentTrip(int tripId, int payment,string userId)
+        {
+            
+
+            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.id == tripId);
+            Driver? driver = await _context.Drivers!.FirstOrDefaultAsync(t => t.Id == trip!.driverId);
+            User? user = await _context.Users!.FirstOrDefaultAsync(t => t.Id == userId);
+
+            double amount = 0.0;
+            double tax = trip!.price * 10 / 100;
+            if (payment == 0)
+            {
+                driver!.Wallet -= tax;
+
+                amount = tax;
+            }
+            else
+            {
+                double points = trip!.price - tax;
+                driver!.Wallet += points;
+                amount = points;
+            }
+
+            trip!.payment = payment;
+
+            Wallet wallet = new Wallet
+            {
+                UserIdFrom = userId,
+                UserName = user!.FullName,
+                UserIdTo = driver.UserId,
+                Desc = "payment Trip",
+                Amount = amount
+
+            };
+            await _walletRepo.AddWallet(wallet);
+            _context.SaveChanges();
+            return trip;
+        }
     }
 }

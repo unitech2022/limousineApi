@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using AutoMapper;
 using LimousineApi.Data;
 using LimousineApi.Dtos;
 using LimousineApi.Models;
+using LimousineApi.Services.WalletsServices;
 using LimousineApi.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,12 +18,13 @@ namespace LimousineApi.Services.ExternalTripsService
 
         private readonly IMapper _mapper;
         private readonly AppDBcontext _context;
-
-        public ExternalTripService(IMapper mapper, AppDBcontext context)
+private readonly IWalletsServices _walletRepo;
+        public ExternalTripService(IMapper mapper, AppDBcontext context, IWalletsServices walletRepo)
         {
             _mapper = mapper;
 
             _context = context;
+            _walletRepo = walletRepo;
         }
 
 
@@ -136,6 +135,8 @@ namespace LimousineApi.Services.ExternalTripsService
 
 
 
+
+
         public async Task<ExternalTripDetailsResponse> ExternalTripDetails(int tripId)
         {
             List<BookingResponse> bookingsResponse = new List<BookingResponse>();
@@ -199,7 +200,7 @@ namespace LimousineApi.Services.ExternalTripsService
         {
             bool isBooking = false;
             ExternalTrip? externalTrip = await _context.ExternalTrips!.FirstOrDefaultAsync(t => t.id == tripId);
-            Booking? booking = await _context.Bookings!.FirstOrDefaultAsync(t => t.userId == userId && t.externalTripId==externalTrip!.id && t.status !=2);
+            Booking? booking = await _context.Bookings!.FirstOrDefaultAsync(t => t.userId == userId && t.externalTripId == externalTrip!.id && t.status != 2);
             if (booking == null)
             {
                 isBooking = false;
@@ -226,5 +227,46 @@ namespace LimousineApi.Services.ExternalTripsService
 
 
         }
+
+
+        public async Task<dynamic> PaymentExternalTrip(int tripId, int payment,string userId)
+        {
+
+            ExternalTrip? trip = await _context.ExternalTrips!.FirstOrDefaultAsync(t => t.id == tripId);
+            Driver? driver = await _context.Drivers!.FirstOrDefaultAsync(t => t.Id == trip!.driverId);
+            User? user = await _context.Users!.FirstOrDefaultAsync(t => t.Id == userId);
+            double tax = trip!.price * 10 / 100;
+            double amount = 0.0;
+            if (payment == 0)
+            {
+                driver!.Wallet -= tax;
+                amount = tax;
+
+            }
+            else
+            {
+                double points = trip!.price - tax;
+                driver!.Wallet += points;
+                amount = points;
+            }
+
+            trip!.Payment = payment;
+
+            Wallet wallet = new Wallet
+            {
+                UserIdFrom = user!.Id,
+                UserName = user.FullName,
+                UserIdTo = driver.UserId,
+                Desc = "payment Trip",
+                Amount = amount
+
+            };
+            await _walletRepo.AddWallet(wallet);
+            _context.SaveChanges();
+            return trip;
+        }
+
+
+
     }
 }

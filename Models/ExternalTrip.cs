@@ -24,6 +24,7 @@ namespace LimousineApi.Models
         public double endPointLng { get; set; }
 
         public int? Sets { get; set; }
+        public int? Payment { get; set; }
 
         public int status { get; set; }
          public int bookings { get; set; }
@@ -35,6 +36,7 @@ namespace LimousineApi.Models
         {
 
             CreatedAt = DateTime.UtcNow.AddHours(3);
+            Payment= -1;
         }
     }
 }

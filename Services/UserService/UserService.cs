@@ -278,6 +278,8 @@ namespace LimousineApi.Serveries
         public async Task<User> GetUser(string UserId)
         {
             User? user = await _context.Users.FindAsync(UserId);
+
+            
             return user!;
         }
     }

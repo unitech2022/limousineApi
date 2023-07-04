@@ -28,5 +28,8 @@ namespace LimousineApi.Services.ExternalTripsService
           Task<dynamic> UpdateExternalTrip(UpdateExternalTripDto updateExternalTripDto,int id);
         Task<dynamic> ChangeStatusTrip(int TripId, int Status,string UserId);
 
+
+        Task<dynamic> PaymentExternalTrip(int tripId,int payment,string userId);
+
     }
 }

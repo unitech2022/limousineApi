@@ -15,7 +15,7 @@ namespace LimousineApi.ViewModels
         public string? Gender { get; set; }
         public string? City { get; set; }
         public DateTime? Birth { get; set; }
-        public string? Points { get; set; }
+        public double? Points { get; set; }
         public string? SurveysBalance { get; set; }
         public DateTime? CreatedAt { get; set; }
     }

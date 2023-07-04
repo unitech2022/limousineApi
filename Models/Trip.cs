@@ -23,12 +23,17 @@ namespace LimousineApi.Models
         public int driverId { get; set; }
 
         public int carId { get; set; }
+
         public double price { get; set; }
+
         public string? userId { get; set; }
+
         public double startPointLat { get; set; }
+
         public double startPointLng { get; set; }
 
         public double endPointLat { get; set; }
+
         public double endPointLng { get; set; }
 
         public string? startAddress { get; set; }
@@ -47,6 +52,10 @@ namespace LimousineApi.Models
         {
 
             CreatedAt = DateTime.UtcNow.AddHours(3);
+            payment = 5;
+
+
         }
+    
     }
 }

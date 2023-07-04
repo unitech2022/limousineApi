@@ -100,7 +100,7 @@ namespace LimousineApi.Services.DriverService
 
          
              UserDetailResponse? userDetailResponse = null;
-            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.status < 6 && t.driverId == driver!.Id);
+            Trip? trip = await _context.Trips!.FirstOrDefaultAsync(t => t.status < 7 && t.driverId == driver!.Id);
             if(trip != null){
                   User? user = await _context.Users!.FirstOrDefaultAsync(t => t.Id == trip.userId);
                userDetailResponse=_mapper.Map<UserDetailResponse>(user);

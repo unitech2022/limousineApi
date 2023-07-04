@@ -162,6 +162,9 @@ namespace LimousineApi.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("longtext");
 
+                    b.Property<double?>("Wallet")
+                        .HasColumnType("double");
+
                     b.Property<int>("ZoneId")
                         .HasColumnType("int");
 
@@ -181,6 +184,9 @@ namespace LimousineApi.Migrations
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("Payment")
+                        .HasColumnType("int");
 
                     b.Property<int?>("Sets")
                         .HasColumnType("int");
@@ -514,6 +520,35 @@ namespace LimousineApi.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("LimousineApi.Models.Wallet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("double");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Desc")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserIdFrom")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserIdTo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Wallets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

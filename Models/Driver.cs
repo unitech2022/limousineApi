@@ -21,7 +21,9 @@ namespace LimousineApi.Models
 
         public int Status { get; set; }
 
- public double? Rate { get; set; }
+        public double? Rate { get; set; }
+
+        public double? Wallet { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public Driver()
@@ -29,6 +31,7 @@ namespace LimousineApi.Models
 			Lat =0.0;
 			Lng=0.0;
             Rate=0.0;
+            Wallet=0.0;
 
             CreatedAt = DateTime.UtcNow.AddHours(3);
         }

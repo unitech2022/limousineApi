@@ -4,22 +4,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-
 using LimousineApi.Models;
 using LimousineApi.Services.AddressesServices;
 using LimousineApi.Dtos;
-
 namespace LimousineApi.Controllers
 {
-//  dotnet commends
+
+
+
+// dotnet commends
+// ** added col Wallet in database
+// ** added col Payment  in extrenalTrip database
 
 // dotnet publish --configuration Release
 // migrations dotnet
 // dotnet ef migrations add InitialCreate
- // update database 
+// update database 
 // dotnet ef database update
-// create
 // dotnet new webapi -n name 
+
+
 
     [ApiController]
     [Route("address")]

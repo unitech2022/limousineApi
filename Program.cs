@@ -13,6 +13,7 @@ using LimousineApi.Services.GroupsServices;
 using LimousineApi.Services.NotificationsService;
 using LimousineApi.Services.RateServices;
 using LimousineApi.Services.TripsService;
+using LimousineApi.Services.WalletsServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,7 @@ builder.Services.AddScoped<IRateServices, RateServices>();
 builder.Services.AddScoped<IGroupsLocationServices, GroupLocationsServices>();
 builder.Services.AddScoped<IGroupsServices, GroupsServices>();
 builder.Services.AddScoped<IBookingServices, BookingServices>();
+builder.Services.AddScoped<IWalletsServices, WalletsServices>();
 
 
 
